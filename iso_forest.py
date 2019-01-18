@@ -93,7 +93,14 @@ class iTree(object):
             return Node(X, self.q, self.p, e, left, right, node_type = 'exNode' )
         else:
             self.q = rn.choice(self.Q)
-            self.p = rn.uniform(X[:,self.q].min(),X[:,self.q].max())
+            min = X[:,self.q].min()
+            max = X[:,self.q].max()
+            if min==max:
+                left = None
+                right = None
+                self.exnodes += 1
+                return Node(X, self.q, self.p, e, left, right, node_type = 'exNode' )
+            self.p = rn.uniform(min,max)
             w = np.where(X[:,self.q] < self.p,True,False)
             return Node(X, self.q, self.p, e,\
             left=self.make_tree(X[w],e+1,l),\
